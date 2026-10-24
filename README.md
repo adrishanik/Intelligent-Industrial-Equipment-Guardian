@@ -25,3 +25,4 @@ It is exist because it scan the outer most part and tell it need repairing or no
 
 
 # MIT License :-
+https://github.com/adrishanik/Intelligent-Industrial-Equipment-Guardian/blob/main/LICENSE
