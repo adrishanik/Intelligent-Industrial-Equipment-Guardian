@@ -11,10 +11,18 @@ The Firmware code is contain the c++ language for esp 32 and this code help to w
 It is exist because it scan the outer most part and tell it need repairing or not  
 # PCB diagram
 <img width="575" height="425" alt="quickshot_261024_090249" src="https://github.com/user-attachments/assets/ddc7bff1-37ed-4235-b966-c9e3afa37f50" />
+## PCB diagram link
 
+https://easyeda.com/editor#id=e10e4694126b4f87ac2e002340c3aec0|7fa8300db8e244999ffccc32641a6dc3|2e27461a5cb34b2db650d27f3c599772|32ff481a0b414b9ba87ef98f3fffb9f7|cf5b25ace84f4fb49a7f3fb2894c5405
 
 # 3D VIEW
 <img width="851" height="533" alt="quickshot_261024_114117" src="https://github.com/user-attachments/assets/23aeee48-f4cd-4ebd-b1f1-ccab906f2168" />
+
+## 3D VIEW LINK (https://easyeda.com/editor#id=e10e4694126b4f87ac2e002340c3aec0|7fa8300db8e244999ffccc32641a6dc3|2e27461a5cb34b2db650d27f3c599772|32ff481a0b414b9ba87ef98f3fffb9f7|cf5b25ace84f4fb49a7f3fb2894c5405)
+
+### step1: click the link , then see a interface
+
+### step2: then click the 3d botton to see our work in 3d
 
 # 2D VIEW 
 <img width="789" height="495" alt="quickshot_261024_114152" src="https://github.com/user-attachments/assets/2ac30532-fe35-4fc1-8b26-ebd79772a796" />
