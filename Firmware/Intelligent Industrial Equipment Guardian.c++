@@ -1,56 +1,130 @@
 #include <LiquidCrystal_I2C.h>
-#include <Wire.h>
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#include <DHT.h>
 
-LiquidCrystal_I2C lcd(0x27,16,2); 
-  
 
-#define DHTPIN 7     
-#define DHTTYPE DHT11   
-DHT dht(DHTPIN, DHTTYPE);
+char auth[] = "qeb47745frrrsj532";
+char ssid[] = "Anik";
+char pass[] = "1255";
 
-int h;  
-int t; 
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+DHT dht(D4, DHT11);
+BlynkTimer timer;
+bool pirbutton = 0;
 
-void setup()
-{
-    Serial.begin(9600);
-    Serial.println("Temperature and Humidity Sensor Test");
-    dht.begin();
-    lcd.init();
-    lcd.backlight();
+#define Buzzer 10
+#define MQ2 A0
+#define flame D0
+#define PIR D3
+#define trig D5
+#define echo D6
+#define relay1 D7
+#define relay2 D8
+
+BLYNK_WRITE(V0) {
+  pirbutton = param.asInt();
 }
 
-void loop()
-{
- 
-    h = dht.readHumidity();
-    t = dht.readTemperature();
-    
-    //Print temp and humidity values to serial monitor
-    Serial.print("Humidity: ");
-    Serial.print(h);
-    Serial.print(" %, Temp: ");
-    Serial.print(t);
-    Serial.println(" ° Celsius");
-        
-// set the cursor to (0,0):
-// print from 0 to 9:
+void setup() {
+  Serial.begin(9600);
+  lcd.init();
+  lcd.backlight();
+  pinMode(Buzzer, OUTPUT);
+  pinMode(flame, INPUT);
+  pinMode(PIR, INPUT);
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+  pinMode(relay1, OUTPUT);
+  pinMode(relay2, OUTPUT);
+  digitalWrite(relay1, HIGH);
+  digitalWrite(relay2, HIGH);
+  Blynk.begin(auth, ssid, pass);
+  dht.begin();
+  timer.setInterval(100L, gassensor);
+  timer.setInterval(100L, DHT11sensor);
+  timer.setInterval(100L, flamesensor);
+  timer.setInterval(100L, pirsensor);
+  timer.setInterval(100L, ultrasonic);
+}
 
-    lcd.setCursor(0, 0);
-    lcd.println(" Now Temperature ");
-    
-    lcd.setCursor(0, 1);
-    lcd.print("T:");
-    lcd.print(t);
-    lcd.print("C");
+void gassensor() {
+  int value = analogRead(MQ2);
+  Serial.println(value);
+  value = map(value, 0, 1024, 0, 100);
+  if (value <= 35) {
+    digitalWrite(Buzzer, LOW);
+  } else if (value > 35) {
+    Blynk.notify("Warning! Gas leak detected");
+    digitalWrite(Buzzer, HIGH);
+  }
+  Blynk.virtualWrite(V1, value);
+  lcd.setCursor(9, 0);
+  lcd.print("G :");
+  lcd.print(value);
+  lcd.print("  ");
+}
 
-    lcd.setCursor(6, 1);
-    lcd.println("2020 ");
-     
-    lcd.setCursor(11, 1);
-    lcd.print("H:");
-    lcd.print(h);
-    lcd.print("%");
-    
-  delay(1000); //Delay 1 sec.
+void DHT11sensor() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  Blynk.virtualWrite(V2, t);
+  Blynk.virtualWrite(V3, h);
+
+  lcd.setCursor(0, 0);
+  lcd.print("T :");
+  lcd.print(t);
+
+  lcd.setCursor(0, 1);
+  lcd.print("H :");
+  lcd.print(h);
+}
+
+void flamesensor() {
+  bool value = digitalRead(flame );
+  if (value == 1) {
+    digitalWrite(Buzzer, LOW);
+  } else if (value == 0) {
+    Blynk.notify("Warning! Fire was detected");
+    digitalWrite(Buzzer, HIGH);
+  }
+}
+void pirsensor() {
+  bool value = digitalRead(PIR);
+  if (pirbutton == 1) {
+    if (value == 0) {
+      digitalWrite(Buzzer, LOW);
+    } else if (value == 1) {
+      Blynk.notify("Warning! Please check your security system");
+      digitalWrite(Buzzer, HIGH);
+    }
+  }
+}
+
+void ultrasonic() {
+  digitalWrite(trig, LOW);
+  delayMicroseconds(4);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  long t = pulseIn(echo, HIGH);
+  long cm = t / 29 / 2;
+  Blynk.virtualWrite(V4, cm);
+  lcd.setCursor(9, 1);
+  lcd.print("W :");
+  lcd.print(cm);
+  lcd.print("  ");
+}
+
+
+void loop() {
+  Blynk.run();
+  timer.run();
 }
