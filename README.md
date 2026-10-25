@@ -4,7 +4,7 @@
 ## About this project :
 This is an IOT project that helps to check equipment condition and unusual behavior.In short it worn which components need repairing.
 ## How it work
-While any components heat or vibrate unusually then the sensor generate a signal that pass to the esp 32 receive the signal then pass another signal to display then see the temperature and vibration but it have a limitation it cannot check any type of mechanical fault by itself .
+While any component makes heat or unusual activity automatically  the 
 ## what do Firmware code
 The Firmware code is contain the c++ language for esp 32 and this code help to work our project and it display the temperature and vibration.
 ## Why it is exist
