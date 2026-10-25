@@ -4,7 +4,10 @@
 ## About this project :
 This is an IOT project that helps to check equipment condition and unusual behavior.In short it worn which components need repairing.
 ## How it work
-While any component makes heat or unusual activity automatically  the 
+While any component makes heat automatically then DHT11 sensor sense this and send the signal to esp32. The esp 32 check the temperature of component is ok or not and also show in the display while the components makes unusual activity automatically then SW-420 sensor sense the activity and send this signal to esp 32.The esp 32 check the  unusual activity of component is ok or not and also show in the display . 
+## It have a limitation 
+it only check the outer most part of the component
+
 ## what do Firmware code
 The Firmware code is contain the c++ language for esp 32 and this code help to work our project and it display the temperature and vibration.
 ## Why it is exist
